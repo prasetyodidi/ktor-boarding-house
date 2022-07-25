@@ -1,4 +1,4 @@
-package tech.didiprasetyo.database.entity
+package tech.didiprasetyo.data.local.entity
 
 import java.util.UUID
 
