@@ -23,6 +23,16 @@ repositories {
     mavenCentral()
 }
 
+tasks.named<Test>("test"){
+    useJUnitPlatform()
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class).all {
+    kotlinOptions {
+        jvmTarget = "11"
+    }
+}
+
 dependencies {
     implementation("io.ktor:ktor-server-core-jvm:$ktor_version")
     implementation("io.ktor:ktor-server-content-negotiation-jvm:$ktor_version")
@@ -44,7 +54,12 @@ dependencies {
     implementation("io.insert-koin:koin-ktor:$koin_version")
     // SLF4J Logger
     implementation("io.insert-koin:koin-logger-slf4j:$koin_version")
+    // BCrypt
+    implementation("org.mindrot:jbcrypt:0.4")
+    // Apache Email
+    implementation("org.apache.commons:commons-email:1.5")
 
+    testImplementation("io.github.serpro69:kotlin-faker:1.11.0")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.8.2")
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktor_version")
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
 }
