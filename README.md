@@ -1,3 +1,3 @@
 # ktor-boarding-house
 
-back and for kos-app
+Backend for kos-app
