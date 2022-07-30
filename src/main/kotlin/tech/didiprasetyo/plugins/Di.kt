@@ -21,10 +21,11 @@ fun Application.configureKoin(){
         single<ReminderRepository> { ReminderRepositoryImpl() }
         single<SessionRepository> { SessionRepositoryImpl() }
         single<UserRepository> { UserRepositoryImpl() }
+        single<BoardingHouseRepository> { BoardingHouseRepositoryImpl() }
 
         single { EmailToken(get()) }
         single<AuthService> { AuthService(get(), get(), get(), get()) }
-        single { RoomService(get(), get(), get()) }
+        single { RoomService(get(), get(), get(), get()) }
 
         single { AppDatabase(get()) }
     }

@@ -37,7 +37,7 @@ class AuthService(
         // create session
         val session = sessionRepository.createSession(userExist.id, device)
         // create token
-        return createUserToken(user, session.toString())
+        return createUserToken(userExist, session.toString())
     }
 
     suspend fun register(user: UserRegister): Response<Email>{
@@ -124,11 +124,11 @@ class AuthService(
         }
     }
 
-    private fun createUserToken(user: UserLogin, session: String): String {
+    private fun createUserToken(user: UserEntity, session: String): String {
         return JWT.create()
             .withAudience(audience)
             .withIssuer(issuer)
-            .withClaim("email", user.email)
+            .withClaim("user", user.id.toString())
             .withClaim("session", session)
             .withExpiresAt(Date(System.currentTimeMillis() + 1000 * 3600))
             .sign(Algorithm.HMAC256(secret))
