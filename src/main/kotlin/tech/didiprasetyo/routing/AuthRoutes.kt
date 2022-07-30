@@ -90,15 +90,40 @@ fun Route.authRouting(){
     }
 
     get("verify-email/{token}") {
-        // convert token from string to uuid
-        // call update user
-        // return
+        // get token
+        val token = call.parameters["token"] ?: return@get call.respond(
+            Response<String>(
+                status = Status.Fail,
+                message = "token invalid",
+                data = emptyList()
+            )
+        )
+        authService.verifyEmail(token)
+        call.respond(
+            Response<String>(
+                status = Status.Success,
+                message = "email has been verified",
+                data = emptyList()
+            )
+        )
     }
     get("/delete-email/{token}") {
         // get token
-        // verify token
-        // call delete user
-        // return
+        val token = call.parameters["token"] ?: return@get call.respond(
+            Response<String>(
+                status = Status.Fail,
+                message = "token invalid",
+                data = emptyList()
+            )
+        )
+        authService.deleteEmail(token)
+        call.respond(
+            Response<String>(
+                status = Status.Success,
+                message = "email has been deleted",
+                data = emptyList()
+            )
+        )
     }
 
     post("/reset-password/{token}") {

@@ -23,7 +23,7 @@ class AuthService(
     private val userRepository: UserRepository,
     private val emailToken: EmailToken,
     private val config: HoconApplicationConfig
-    ) {
+) {
     private val secret = config.property("jwt.secret").getString()
     private val audience = config.property("jwt.audience").getString()
     private val issuer = config.property("jwt.issuer").getString()
@@ -40,11 +40,11 @@ class AuthService(
         return createUserToken(userExist, session.toString())
     }
 
-    suspend fun register(user: UserRegister): Response<Email>{
+    suspend fun register(user: UserRegister): Response<Email> {
         return try {
             // check email user
             val email = userRepository.getByEmail(user.email)
-            if (email != null){
+            if (email != null) {
                 return Response(
                     status = Status.Success,
                     message = "email already exist",
@@ -52,7 +52,7 @@ class AuthService(
                 )
             }
             // insert user
-            val now = System.currentTimeMillis()/1000
+            val now = System.currentTimeMillis() / 1000
             val userDate = UserEntity(
                 id = UUID.fromString(user.id),
                 name = user.name,
@@ -74,7 +74,7 @@ class AuthService(
                 message = "success register new account",
                 data = listOf(Email(user.email))
             )
-        } catch (e: Throwable){
+        } catch (e: Throwable) {
             Response(
                 status = Status.Success,
                 message = "error: ${e.message}",
@@ -83,28 +83,28 @@ class AuthService(
         }
     }
 
-    suspend fun logout(sessionId: UUID): Boolean{
+    suspend fun logout(sessionId: UUID): Boolean {
         try {
             sessionRepository.delete(sessionId)
-        } catch (e: Exception){
+        } catch (e: Exception) {
             return false
         }
         return true
     }
 
-    fun resetPassword(){
+    fun resetPassword() {
 
     }
 
-    suspend fun getSessionByUserId(id: UUID): List<SessionEntity>{
+    suspend fun getSessionByUserId(id: UUID): List<SessionEntity> {
         return sessionRepository.getByUserId(id)
     }
 
-    suspend fun getSessionById(id: UUID): SessionEntity?{
+    suspend fun getSessionById(id: UUID): SessionEntity? {
         return sessionRepository.getById(id)
     }
 
-    suspend fun verifyEmail(token: String){
+    suspend fun verifyEmail(token: String) {
         try {
             // verify token
             val verify = emailToken.verifier.verify(token)
@@ -114,12 +114,31 @@ class AuthService(
 
             // update user
             val user = userRepository.getByEmail(email) ?: throw IllegalArgumentException("email now found")
-            val now = System.currentTimeMillis()/1000
+            val now = System.currentTimeMillis() / 1000
             userRepository.update(user.copy(verifiedAt = now))
-
-        } catch (e: JWTVerificationException){
+        } catch (e: JWTVerificationException) {
             println("error : ${e.message}")
-        } catch (e: IllegalArgumentException){
+        } catch (e: IllegalArgumentException) {
+            println("error : ${e.message}")
+        }
+    }
+
+    suspend fun deleteEmail(token: String) {
+        try {
+            // verify token
+            val verify = emailToken.verifier.verify(token)
+
+            // get email claim
+            val email = verify.getClaim("email").asString()
+
+            // delete user
+            val user = userRepository.getByEmail(email) ?: throw IllegalArgumentException("email now found")
+            if (user.verifiedAt == null){
+                userRepository.delete(user)
+            }
+        } catch (e: JWTVerificationException) {
+            println("error : ${e.message}")
+        } catch (e: IllegalArgumentException) {
             println("error : ${e.message}")
         }
     }
@@ -134,7 +153,7 @@ class AuthService(
             .sign(Algorithm.HMAC256(secret))
     }
 
-    private fun sendVerifyEmail(toEmail: String, token: String){
+    private fun sendVerifyEmail(toEmail: String, token: String) {
         val email = HtmlEmail()
 //        val hostName = config.property("").getString()
         email.hostName = "smtp.mailtrap.io"
@@ -142,11 +161,12 @@ class AuthService(
         email.setAuthentication("08311fb1f4ad18", "5662f1b73a11f0")
         email.setFrom("noreply@mykos.tech")
         email.subject = "verify-email"
-        email.setHtmlMsg( "\n" +
-                "<a href=\"http://127.0.0.1/verify-email/$token\">link verify</a><br>\n" +
-                "\n" +
-                "<a href=\"http://127.0.0.1/delete-email/$token\">link delete account</a>\n" +
-                "\n"
+        email.setHtmlMsg(
+            "\n" +
+                    "<a href=\"http://127.0.0.1/verify-email/$token\">link verify</a><br>\n" +
+                    "\n" +
+                    "<a href=\"http://127.0.0.1/delete-email/$token\">link delete account</a>\n" +
+                    "\n"
         )
         email.setTextMsg("Your email client does not support HTML messages")
         email.addTo(toEmail)
