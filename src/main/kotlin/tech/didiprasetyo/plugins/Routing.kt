@@ -1,14 +1,21 @@
 package tech.didiprasetyo.plugins
 
 import io.ktor.server.routing.*
-import io.ktor.http.*
 import io.ktor.server.application.*
+import io.ktor.server.auth.*
 import io.ktor.server.response.*
-import io.ktor.server.request.*
+import tech.didiprasetyo.routing.authRouting
+import tech.didiprasetyo.routing.roomRouting
+import tech.didiprasetyo.routing.userRouting
 
 fun Application.configureRouting() {
 
     routing {
+        authRouting()
+        authenticate("auth-jwt") {
+            roomRouting()
+            userRouting()
+        }
         get("/") {
             call.respondText("Hello World!")
         }
