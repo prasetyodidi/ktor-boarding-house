@@ -2,7 +2,7 @@ package tech.didiprasetyo.data.local.entity
 
 import java.util.UUID
 
-data class BoardingHouse(
+data class BoardingHouseEntity(
     val id: UUID,
     val idOwner: UUID,
     val name: String,
