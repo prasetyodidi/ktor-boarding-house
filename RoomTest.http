@@ -1,0 +1,8 @@
+GET http://0.0.0.0:8080/room/739d6241-2f2c-4908-b1bd-e7c9540d36a1/room-info
+Content-Type: application/json
+###
+
+GET http://0.0.0.0:8080/room/f1900c84-ed13-4287-9329-fd2d1b703036/room-info
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJodHRwOi8vMC4wLjAuMDo4MDgwL2hlbGxvIiwic2Vzc2lvbiI6ImQ2NzQxMjQxLTAxYjAtNDE1Ni04Y2I5LWFkNzgyZWI0ZDQ0MSIsImlzcyI6Imh0dHA6Ly8wLjAuMC4wOjgwODAvIiwiZXhwIjoxNjU5MTY2OTkyLCJlbWFpbCI6Im1pbGx5LmhvcHBlQGhvdG1haWwudGVzdCJ9.wxqGOx11vS4iRxfmg6G-tZdBYHUYTIn_hre9PgXFPU4
+Content-Type: application/json
+###

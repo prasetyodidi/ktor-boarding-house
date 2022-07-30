@@ -1,0 +1,21 @@
+POST http://0.0.0.0:8080/register
+Content-Type: application/json
+
+{
+  "id": "739d6241-2f2c-4908-b1bd-e7c9540d36a1",
+  "name": "ucup",
+  "email": "eail@example.com",
+  "password": "$2a$10$koOVCqgas1pIzEofexmFAeOXeL1PhKWCCFFX9oH1sX/rxVmBamTIS"
+}
+###
+
+POST http://0.0.0.0:8080/login
+Content-Type: application/json
+
+{
+  "email": "milly.hoppe@hotmail.test",
+  "password": "password"
+}
+###
+
+

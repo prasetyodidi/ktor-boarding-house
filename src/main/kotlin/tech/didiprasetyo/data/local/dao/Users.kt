@@ -9,6 +9,7 @@ object Users : Table() {
     val password = varchar("password", 255)
     val noTelp = varchar("no_telp", 255).uniqueIndex().nullable()
     val avatarUrl = varchar("avatar_url", 255).nullable()
+    val verifiedAt = long("verified_at").nullable()
     val createdAt = long("created_at")
     val updatedAt = long("updated_at")
 

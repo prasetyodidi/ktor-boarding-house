@@ -1,13 +1,14 @@
 package tech.didiprasetyo.data.local
 
-import com.typesafe.config.ConfigFactory
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import io.ktor.server.config.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.transactions.transaction
 
-class AppDatabase {
-    private val config = HoconApplicationConfig(ConfigFactory.load())
+class AppDatabase(config: HoconApplicationConfig) {
     private val dbUrl = config.property("db.jdbcUrl").getString()
     private val user = config.property("db.user").getString()
     private val pass = config.property("db.pass").getString()
@@ -28,5 +29,12 @@ class AppDatabase {
         config.validate()
 
         return HikariDataSource(config)
+    }
+
+    companion object{
+        suspend fun <T>dbQuery(block: () -> T): T =
+            withContext(Dispatchers.IO){
+                transaction { block() }
+            }
     }
 }
