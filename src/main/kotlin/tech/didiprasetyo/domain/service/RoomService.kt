@@ -36,6 +36,7 @@ class RoomService(
         val reminders = getRemindersOfRoom(roomId)
         val reminderDate = getReminderDate(roomId)
         return RoomInfo(
+            roomId = roomId.toString(),
             rules = rules,
             reminders = reminders,
             reminderDate = reminderDate
@@ -53,7 +54,7 @@ class RoomService(
         TODO("Not implemented")
     }
 
-    suspend fun getRoomsByTenant(tenantId: UUID): List<Room> {
+    suspend fun getTenantRoom(tenantId: UUID): List<Room> {
         return roomRepository
             .getByTenantId(tenantId)
             .map { it.intoRoom() }
