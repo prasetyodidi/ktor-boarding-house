@@ -4,6 +4,7 @@ import tech.didiprasetyo.domain.model.DateRange
 import tech.didiprasetyo.domain.model.Reminder
 import tech.didiprasetyo.domain.model.Room
 import tech.didiprasetyo.domain.model.RoomInfo
+import tech.didiprasetyo.domain.repository.BoardingHouseRepository
 import tech.didiprasetyo.domain.repository.ReminderRepository
 import tech.didiprasetyo.domain.repository.RoomRepository
 import tech.didiprasetyo.domain.repository.RuleRepository
@@ -12,25 +13,48 @@ import java.util.UUID
 class RoomService(
     private val roomRepository: RoomRepository,
     private val ruleRepository: RuleRepository,
-    private val reminderRepository: ReminderRepository
+    private val reminderRepository: ReminderRepository,
+    private val boardingHouseRepository: BoardingHouseRepository
 ) {
+    private suspend fun validateUser(roomId: UUID, userId: UUID): Boolean{
+        val room = roomRepository.getById(roomId)
+        if (room?.idTenant == null || room.idTenant != userId){
+            return false
+        }
+        val boardingHouse = boardingHouseRepository.getById(room.idBoardingHouse)
+        if (boardingHouse == null || boardingHouse.idOwner != userId){
+            return false
+        }
+        return true
+    }
 
-    suspend fun getRoomInfo(roomId: UUID): RoomInfo{
+    suspend fun getRoomInfo(roomId: UUID, userId: UUID): RoomInfo?{
+        if (!validateUser(roomId, userId)){
+            return null
+        }
         val rules = getRulesOfRoom(roomId)
         val reminders = getRemindersOfRoom(roomId)
         val reminderDate = getReminderDate(roomId)
         return RoomInfo(
+            roomId = roomId.toString(),
             rules = rules,
             reminders = reminders,
             reminderDate = reminderDate
         )
     }
 
+    suspend fun getRoom(roomId: UUID, userId: UUID): Room?{
+        if (!validateUser(roomId, userId)){
+            return null
+        }
+        return roomRepository.getById(roomId)?.intoRoom()
+    }
+
     suspend fun getRoomByBoardingHouseOwner(ownerId: UUID) : List<Room> {
         TODO("Not implemented")
     }
 
-    suspend fun getRoomsByTenant(tenantId: UUID): List<Room> {
+    suspend fun getTenantRoom(tenantId: UUID): List<Room> {
         return roomRepository
             .getByTenantId(tenantId)
             .map { it.intoRoom() }
