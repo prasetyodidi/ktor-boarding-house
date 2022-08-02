@@ -65,6 +65,6 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.2")
     testImplementation("org.mockito:mockito-core:4.6.1")
     testImplementation("io.insert-koin:koin-test:$koin_version")
-    implementation("io.insert-koin:koin-test-junit5:$koin_version")
+    testImplementation("io.insert-koin:koin-test-junit5:$koin_version")
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktor_version")
 }
