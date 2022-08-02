@@ -13,8 +13,8 @@ fun Application.configureRouting() {
     routing {
         authRouting()
         authenticate("auth-jwt") {
-            roomRouting()
             userRouting()
+            roomRouting()
         }
         get("/") {
             call.respondText("Hello World!")

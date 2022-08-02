@@ -56,24 +56,26 @@ fun Route.authRouting(){
         ))
     }
 
-    post("/logout") {
-        // get session
-        val principal = call.principal<JWTPrincipal>()
-        val sessionId = principal!!.payload.getClaim("session").asString()
-        // call method delete session
-        val logout = authService.logout(UUID.fromString(sessionId))
-        if (logout){
-            call.respond(Response(
-                status = Status.Success,
-                message = "logout success",
-                data = emptyList<Any>()
-            ))
-        } else {
-            call.respond(Response(
-                status = Status.Fail,
-                message = "logout fail",
-                data = emptyList<Any>()
-            ))
+    authenticate("auth-jwt"){
+        get("/logout") {
+            // get session
+            val principal = call.principal<JWTPrincipal>()
+            val sessionId = principal!!.payload.getClaim("session").asString()
+            // call method delete session
+            val logout = authService.logout(UUID.fromString(sessionId))
+            if (logout){
+                call.respond(Response(
+                    status = Status.Success,
+                    message = "logout success",
+                    data = emptyList<String>()
+                ))
+            } else {
+                call.respond(Response(
+                    status = Status.Fail,
+                    message = "logout fail",
+                    data = emptyList<String>()
+                ))
+            }
         }
     }
 
@@ -98,16 +100,26 @@ fun Route.authRouting(){
                 data = emptyList()
             )
         )
-        authService.verifyEmail(token)
-        call.respond(
-            Response<String>(
-                status = Status.Success,
-                message = "email has been verified",
-                data = emptyList()
+        val verify = authService.verifyEmail(token)
+        if (verify){
+            call.respond(
+                Response<String>(
+                    status = Status.Success,
+                    message = "email has been verified",
+                    data = emptyList()
+                )
             )
-        )
+        } else{
+            call.respond(
+                Response<String>(
+                    status = Status.Fail,
+                    message = "email not verified",
+                    data = emptyList()
+                )
+            )
+        }
     }
-    get("/delete-email/{token}") {
+    get("delete-email/{token}") {
         // get token
         val token = call.parameters["token"] ?: return@get call.respond(
             Response<String>(
@@ -116,14 +128,24 @@ fun Route.authRouting(){
                 data = emptyList()
             )
         )
-        authService.deleteEmail(token)
-        call.respond(
-            Response<String>(
-                status = Status.Success,
-                message = "email has been deleted",
-                data = emptyList()
+        val delete = authService.deleteEmail(token)
+        if (delete){
+            call.respond(
+                Response<String>(
+                    status = Status.Success,
+                    message = "email has been deleted",
+                    data = emptyList()
+                )
             )
-        )
+        } else{
+            call.respond(
+                Response<String>(
+                    status = Status.Fail,
+                    message = "email not deleted",
+                    data = emptyList()
+                )
+            )
+        }
     }
 
     post("/reset-password/{token}") {

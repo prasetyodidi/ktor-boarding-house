@@ -19,7 +19,13 @@ fun Route.roomRouting() {
         try {
             // call method room info
             val principal = call.principal<JWTPrincipal>()
-            val userId = principal!!.payload.getClaim("user").asString()
+            val verified = principal!!.payload.getClaim("verified").asBoolean()
+            if (!verified) return@get call.respond(Response(
+                status = Status.Fail,
+                message = "You must verify email",
+                data = emptyList<String>()
+            ))
+            val userId = principal.payload.getClaim("user").asString()
             val userIdUUID = UUID.fromString(userId)
             // get room
             val room = roomService.getTenantRoom(userIdUUID)
