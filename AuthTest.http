@@ -18,4 +18,11 @@ Content-Type: application/json
 }
 ###
 
+GET http://0.0.0.0:8080/logout
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJodHRwOi8vMC4wLjAuMDo4MDgwL2hlbGxvIiwic2Vzc2lvbiI6IjhlZTQ0NjMyLWI3MjAtNGI3NC04ODFjLWJhNTAwMzNlZGNlZCIsImlzcyI6Imh0dHA6Ly8wLjAuMC4wOjgwODAvIiwidmVyaWZpZWQiOnRydWUsImV4cCI6MTY1OTQyNjk0MywidXNlciI6ImMzODcyMzEyLTc4ODQtNDJmNi04NDQ5LWYxNDZhYWQzMmY5ZiJ9.TwSIdkOLScOWd8CvtV0_d1EfReVhEpyRI8HkHgXKex4
+
+###
+
+
 

@@ -16,19 +16,21 @@ import tech.didiprasetyo.util.Response
 import tech.didiprasetyo.util.Status
 import java.util.*
 
-fun Route.authRouting(){
+fun Route.authRouting() {
     val authService by inject<AuthService>()
 
     post("/register") {
         // get name, email, password from body request
         val userData = call.receive<UserRegister>()
         // verify request
-        if (userData.password.length < 6){
-            return@post call.respond(Response(
-                status = Status.Fail,
-                message = "password length at least 6 character",
-                data = listOf(Email(userData.email))
-            ))
+        if (userData.password.length < 6) {
+            return@post call.respond(
+                Response(
+                    status = Status.Fail,
+                    message = "password length at least 6 character",
+                    data = listOf(Email(userData.email))
+                )
+            )
         }
         val register = authService.register(userData)
         call.respond(register)
@@ -37,44 +39,54 @@ fun Route.authRouting(){
     post("/login") {
         // get email & password from body request
         val userData = call.receive<UserLogin>()
-        val device = call.request.userAgent() ?: return@post call.respond(Response(
-            status = Status.Fail,
-            message = "user agent not found",
-            data = emptyList<String>()
-        ))
+        val device = call.request.userAgent() ?: return@post call.respond(
+            Response(
+                status = Status.Fail,
+                message = "user agent not found",
+                data = emptyList<String>()
+            )
+        )
         // call login method, callback token
-        val token = authService.login(userData, device) ?: return@post call.respond(Response(
-            status = Status.Fail,
-            message = "cannot create token",
-            data = emptyList<String>()
-        ))
+        val token = authService.login(userData, device) ?: return@post call.respond(
+            Response(
+                status = Status.Fail,
+                message = "cannot create token",
+                data = emptyList<String>()
+            )
+        )
         // send token
-        call.respond(Response(
-            status = Status.Success,
-            message = "login success",
-            data = listOf(Token(token))
-        ))
+        call.respond(
+            Response(
+                status = Status.Success,
+                message = "login success",
+                data = listOf(Token(token))
+            )
+        )
     }
 
-    authenticate("auth-jwt"){
+    authenticate("auth-jwt") {
         get("/logout") {
             // get session
             val principal = call.principal<JWTPrincipal>()
             val sessionId = principal!!.payload.getClaim("session").asString()
             // call method delete session
             val logout = authService.logout(UUID.fromString(sessionId))
-            if (logout){
-                call.respond(Response(
-                    status = Status.Success,
-                    message = "logout success",
-                    data = emptyList<String>()
-                ))
+            if (logout) {
+                call.respond(
+                    Response(
+                        status = Status.Success,
+                        message = "logout success",
+                        data = emptyList<String>()
+                    )
+                )
             } else {
-                call.respond(Response(
-                    status = Status.Fail,
-                    message = "logout fail",
-                    data = emptyList<String>()
-                ))
+                call.respond(
+                    Response(
+                        status = Status.Fail,
+                        message = "logout fail",
+                        data = emptyList<String>()
+                    )
+                )
             }
         }
     }
@@ -101,7 +113,7 @@ fun Route.authRouting(){
             )
         )
         val verify = authService.verifyEmail(token)
-        if (verify){
+        if (verify) {
             call.respond(
                 Response<String>(
                     status = Status.Success,
@@ -109,7 +121,7 @@ fun Route.authRouting(){
                     data = emptyList()
                 )
             )
-        } else{
+        } else {
             call.respond(
                 Response<String>(
                     status = Status.Fail,
@@ -129,7 +141,7 @@ fun Route.authRouting(){
             )
         )
         val delete = authService.deleteEmail(token)
-        if (delete){
+        if (delete) {
             call.respond(
                 Response<String>(
                     status = Status.Success,
@@ -137,7 +149,7 @@ fun Route.authRouting(){
                     data = emptyList()
                 )
             )
-        } else{
+        } else {
             call.respond(
                 Response<String>(
                     status = Status.Fail,

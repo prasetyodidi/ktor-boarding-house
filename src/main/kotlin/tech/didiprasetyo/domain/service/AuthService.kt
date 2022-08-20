@@ -22,7 +22,7 @@ class AuthService(
     private val sessionRepository: SessionRepository,
     private val userRepository: UserRepository,
     private val emailToken: EmailToken,
-    private val config: HoconApplicationConfig
+    config: HoconApplicationConfig
 ) {
     private val secret = config.property("jwt.secret").getString()
     private val audience = config.property("jwt.audience").getString()
@@ -136,7 +136,7 @@ class AuthService(
 
             // delete user
             val user = userRepository.getByEmail(email) ?: throw IllegalArgumentException("email now found")
-            if (user.verifiedAt == null){
+            if (user.verifiedAt == null) {
                 userRepository.delete(user)
             }
             return true
@@ -175,7 +175,7 @@ class AuthService(
         email.send()
     }
 
-    private fun setHtmlVerifyEmail(name: String, token: String):String {
+    private fun setHtmlVerifyEmail(name: String, token: String): String {
         return "<!DOCTYPE html>\n" +
                 "<html>\n" +
                 "<head>\n" +
