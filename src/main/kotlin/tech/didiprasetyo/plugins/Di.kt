@@ -12,7 +12,7 @@ import tech.didiprasetyo.domain.repository.*
 import tech.didiprasetyo.domain.service.AuthService
 import tech.didiprasetyo.domain.service.RoomService
 
-fun Application.configureKoin(){
+fun Application.configureKoin() {
     val appModule = module {
         single { HoconApplicationConfig(ConfigFactory.load()) }
 
@@ -30,7 +30,7 @@ fun Application.configureKoin(){
         single { AppDatabase(get()) }
     }
 
-    install(Koin){
+    install(Koin) {
         slf4jLogger()
         modules(appModule)
     }
