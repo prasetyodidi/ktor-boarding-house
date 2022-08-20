@@ -34,12 +34,13 @@ class RoomService(
         }
         val rules = getRulesOfRoom(roomId)
         val reminders = getRemindersOfRoom(roomId)
-        val reminderDate = getReminderDate(roomId)
+        val reminderDateRange = getReminderDateRange(roomId)
         return RoomInfo(
             roomId = roomId.toString(),
             rules = rules,
             reminders = reminders,
-            reminderDate = reminderDate
+            dateEntry = reminderDateRange.entry,
+            dateOut = reminderDateRange.out
         )
     }
 
