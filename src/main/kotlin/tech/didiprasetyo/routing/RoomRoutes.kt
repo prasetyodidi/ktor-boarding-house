@@ -6,6 +6,7 @@ import io.ktor.server.auth.jwt.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import org.koin.ktor.ext.inject
+import tech.didiprasetyo.domain.model.DateRange
 import tech.didiprasetyo.domain.model.Room
 import tech.didiprasetyo.domain.model.RoomInfo
 import tech.didiprasetyo.domain.service.RoomService
@@ -49,7 +50,7 @@ fun Route.roomRouting() {
         }
     }
     route("room/{roomId}") {
-        get("/rules") {
+        get("/rule") {
             val roomId = call.parameters["roomId"] ?: return@get call.respond(
                 Response<Any>(
                     status = Status.Fail,
@@ -108,14 +109,33 @@ fun Route.roomRouting() {
                     data = null
                 )
             )
-            val dateRange = roomService.getReminderDateRange(UUID.fromString(roomId))
-            call.respond(
-                Response(
-                    status = Status.Success,
-                    message = "get reminder date range",
-                    data = listOf(dateRange)
+
+            try{
+                val dateRange = roomService.getReminderDateRange(UUID.fromString(roomId))
+                call.respond(
+                    Response(
+                        status = Status.Success,
+                        message = "get reminder date range",
+                        data = listOf(dateRange)
+                    )
                 )
-            )
+            } catch (e: IllegalArgumentException){
+                call.respond(
+                    Response<DateRange>(
+                        status = Status.Fail,
+                        message = "room does not have tenant",
+                        data = emptyList()
+                    )
+                )
+            } catch (e: Exception){
+                call.respond(
+                    Response<DateRange>(
+                        status = Status.Fail,
+                        message = "unknown error",
+                        data = emptyList()
+                    )
+                )
+            }
         }
         get("/room-info") {
             // get room id from parameter request
@@ -146,6 +166,14 @@ fun Route.roomRouting() {
                     Response<RoomInfo>(
                         status = Status.Fail,
                         message = "room id invalid",
+                        data = emptyList()
+                    )
+                )
+            } catch (e: Exception){
+                call.respond(
+                    Response<RoomInfo>(
+                        status = Status.Fail,
+                        message = "unknown error",
                         data = emptyList()
                     )
                 )

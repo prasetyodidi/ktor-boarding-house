@@ -16,7 +16,7 @@ data class RoomEntity(
 ){
     fun intoRoom(): Room {
         return Room(
-            id = this.id,
+            id = this.id.toString(),
             name = this.name,
             imageUrl = this.imageUrl,
             dateEntry = this.dateEntry,

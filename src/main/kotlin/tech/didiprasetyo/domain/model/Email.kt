@@ -1,6 +1,8 @@
 package tech.didiprasetyo.domain.model
 
-@kotlinx.serialization.Serializable
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class Email(
     val email: String
 )
