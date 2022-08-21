@@ -2,7 +2,7 @@ package tech.didiprasetyo.data.local.dao
 
 import org.jetbrains.exposed.sql.Table
 
-object BoardingHouses: Table() {
+object BoardingHouses: Table(name = "boarding_houses") {
     val id = uuid("id")
     val idOwner = reference("id_owner", Users.id)
     val name = varchar("name", 255)
