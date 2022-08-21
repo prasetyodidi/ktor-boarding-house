@@ -5,5 +5,6 @@ data class RoomInfo(
     val roomId: String,
     val rules: List<String>,
     val reminders: List<Reminder>,
-    val reminderDate: Long = 0
+    val dateEntry: Long,
+    val dateOut: Long
 )

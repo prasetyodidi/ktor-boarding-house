@@ -34,12 +34,13 @@ class RoomService(
         }
         val rules = getRulesOfRoom(roomId)
         val reminders = getRemindersOfRoom(roomId)
-        val reminderDate = getReminderDate(roomId)
+        val reminderDateRange = getReminderDateRange(roomId)
         return RoomInfo(
             roomId = roomId.toString(),
             rules = rules,
             reminders = reminders,
-            reminderDate = reminderDate
+            dateEntry = reminderDateRange.entry,
+            dateOut = reminderDateRange.out
         )
     }
 
@@ -86,14 +87,17 @@ class RoomService(
     }
 
     suspend fun getReminderDateRange(roomId: UUID): DateRange {
-        val room = roomRepository.getById(roomId) ?: throw java.lang.IllegalArgumentException("Tenant not found")
-        if (room.dateOut != null && room.dateEntry != null) {
+        val room = roomRepository.getById(roomId)
+        if (room?.dateOut != null && room.dateEntry != null) {
             return DateRange(
                 entry = room.dateEntry,
                 out = room.dateOut
             )
         }
-        throw java.lang.IllegalArgumentException("Tenant not found")
+        return DateRange(
+            entry = 0,
+            out = 0
+        )
     }
 
 }

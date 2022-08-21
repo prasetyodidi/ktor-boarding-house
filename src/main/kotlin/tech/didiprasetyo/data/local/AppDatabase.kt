@@ -17,7 +17,7 @@ class AppDatabase(config: HoconApplicationConfig) {
         Database.connect(hikari())
     }
 
-    private fun hikari(): HikariDataSource{
+    private fun hikari(): HikariDataSource {
         val config = HikariConfig()
         config.driverClassName = "org.postgresql.Driver"
         config.jdbcUrl = dbUrl
@@ -31,9 +31,9 @@ class AppDatabase(config: HoconApplicationConfig) {
         return HikariDataSource(config)
     }
 
-    companion object{
-        suspend fun <T>dbQuery(block: () -> T): T =
-            withContext(Dispatchers.IO){
+    companion object {
+        suspend fun <T> dbQuery(block: () -> T): T =
+            withContext(Dispatchers.IO) {
                 transaction { block() }
             }
     }

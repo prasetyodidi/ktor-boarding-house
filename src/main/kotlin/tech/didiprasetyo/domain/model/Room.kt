@@ -1,9 +1,10 @@
 package tech.didiprasetyo.domain.model
 
-import java.util.*
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class Room(
-    val id: UUID,
+    val id: String,
     val name: String,
     val imageUrl: String,
     val dateEntry: Long?,

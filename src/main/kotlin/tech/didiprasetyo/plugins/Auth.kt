@@ -34,7 +34,7 @@ fun Application.configureJWT() {
                     .info("session id : ${credential.payload.getClaim("session")}")
                 val sessionId = credential.payload.getClaim("session").asString()
                 val session = authService.getSessionById(UUID.fromString(sessionId))
-                if (session != null){
+                if (session != null) {
                     JWTPrincipal(credential.payload)
                 } else {
                     null

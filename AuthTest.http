@@ -2,9 +2,9 @@ POST http://0.0.0.0:8080/register
 Content-Type: application/json
 
 {
-  "id": "739d6241-2f2c-4908-b1bd-e7c9540d36a1",
-  "name": "ucup",
-  "email": "eail@example.com",
+  "id": "739d6241-2f2c-4908-b1bd-e7c9540d3643",
+  "name": "otong",
+  "email": "otongs@example.com",
   "password": "$2a$10$koOVCqgas1pIzEofexmFAeOXeL1PhKWCCFFX9oH1sX/rxVmBamTIS"
 }
 ###
@@ -13,9 +13,16 @@ POST http://0.0.0.0:8080/login
 Content-Type: application/json
 
 {
-  "email": "milly.hoppe@hotmail.test",
+  "email": "otongs@example.com",
   "password": "password"
 }
 ###
+
+GET http://0.0.0.0:8080/logout
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJodHRwOi8vMC4wLjAuMDo4MDgwL2hlbGxvIiwic2Vzc2lvbiI6IjhmNWU2NTdmLTMzOWQtNDc4NC1hMGZkLTI3M2NlYmI5YjAyYSIsImlzcyI6Imh0dHA6Ly8wLjAuMC4wOjgwODAvIiwidmVyaWZpZWQiOnRydWUsImV4cCI6MTY2MTA4MzkxOCwidXNlciI6ImMzODcyMzEyLTc4ODQtNDJmNi04NDQ5LWYxNDZhYWQzMmY5ZiJ9.uZjz-wBkQvlaXpXtqBdrF1NigbsJZLHkK34QSCV2s3w
+
+###
+
 
 
