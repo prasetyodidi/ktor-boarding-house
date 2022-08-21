@@ -32,8 +32,32 @@ fun Route.authRouting() {
                 )
             )
         }
-        val register = authService.register(userData)
-        call.respond(register)
+        try {
+            val register = authService.register(userData)
+            call.respond(
+                Response(
+                    status = Status.Success,
+                    message = "success register new account",
+                    data = listOf(register)
+                )
+            )
+        } catch (e: IllegalArgumentException){
+            call.respond(
+                Response<Any>(
+                    status = Status.Fail,
+                    message = "${e.message}",
+                    data = emptyList()
+                )
+            )
+        } catch (e: Exception){
+            call.respond(
+                Response<Any>(
+                    status = Status.Fail,
+                    message = "unknown exception",
+                    data = emptyList()
+                )
+            )
+        }
     }
 
     post("/login") {

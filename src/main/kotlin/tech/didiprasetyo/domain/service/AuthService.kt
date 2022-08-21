@@ -14,8 +14,6 @@ import tech.didiprasetyo.domain.model.UserRegister
 import tech.didiprasetyo.domain.repository.SessionRepository
 import tech.didiprasetyo.domain.repository.UserRepository
 import tech.didiprasetyo.plugins.EmailToken
-import tech.didiprasetyo.util.Response
-import tech.didiprasetyo.util.Status
 import java.util.*
 
 class AuthService(
@@ -40,47 +38,31 @@ class AuthService(
         return createUserToken(userExist, session.toString())
     }
 
-    suspend fun register(user: UserRegister): Response<Email> {
-        return try {
-            // check email user
-            val email = userRepository.getByEmail(user.email)
-            if (email != null) {
-                return Response(
-                    status = Status.Success,
-                    message = "email already exist",
-                    data = listOf(Email(user.email))
-                )
-            }
-            // insert user
-            val now = System.currentTimeMillis() / 1000
-            val userDate = UserEntity(
-                id = UUID.fromString(user.id),
-                name = user.name,
-                email = user.email,
-                password = user.password,
-                noTelp = null,
-                avatarUrl = null,
-                verifiedAt = null,
-                createdAt = now,
-                updatedAt = now
-            )
-            userRepository.insert(userDate)
-            val token = emailToken.sign(user.email)
-
-            // send email verification
-            sendVerifyEmail(user, token)
-            Response(
-                status = Status.Success,
-                message = "success register new account",
-                data = listOf(Email(user.email))
-            )
-        } catch (e: Throwable) {
-            Response(
-                status = Status.Success,
-                message = "error: ${e.message}",
-                data = emptyList()
-            )
+    suspend fun register(user: UserRegister): Email {
+        // check email user
+        val email = userRepository.getByEmail(user.email)
+        if (email != null) {
+            throw IllegalArgumentException("email already exist")
         }
+        // insert user
+        val now = System.currentTimeMillis() / 1000
+        val userDate = UserEntity(
+            id = UUID.fromString(user.id),
+            name = user.name,
+            email = user.email,
+            password = user.password,
+            noTelp = null,
+            avatarUrl = null,
+            verifiedAt = null,
+            createdAt = now,
+            updatedAt = now
+        )
+        userRepository.insert(userDate)
+        val token = emailToken.sign(user.email)
+
+        // send email verification
+        sendVerifyEmail(user, token)
+        return Email(user.email)
     }
 
     suspend fun logout(sessionId: UUID): Boolean {
@@ -157,7 +139,7 @@ class AuthService(
             .withClaim("user", user.id.toString())
             .withClaim("verified", verified)
             .withClaim("session", session)
-            .withExpiresAt(Date(System.currentTimeMillis() + 1000 * 3600))
+            .withExpiresAt(Date(System.currentTimeMillis() / 1000 * 3600))
             .sign(Algorithm.HMAC256(secret))
     }
 
@@ -369,7 +351,7 @@ class AuthService(
                 "                    <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n" +
                 "                      <tr>\n" +
                 "                        <td align=\"center\" bgcolor=\"#1a82e2\" style=\"border-radius: 6px;\">\n" +
-                "                          <a href=\"http://127.0.0.1/verify-email/$token\" target=\"_blank\" style=\"display: inline-block; padding: 16px 36px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; color: #ffffff; text-decoration: none; border-radius: 6px;\">Verify Email Address</a>\n" +
+                "                          <a href=\"http://0.0.0.0:8080/verify-email/$token\" target=\"_blank\" style=\"display: inline-block; padding: 16px 36px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; color: #ffffff; text-decoration: none; border-radius: 6px;\">Verify Email Address</a>\n" +
                 "                        </td>\n" +
                 "                      </tr>\n" +
                 "                    </table>\n" +
@@ -383,7 +365,7 @@ class AuthService(
                 "          <!-- start copy -->\n" +
                 "          <tr>\n" +
                 "            <td align=\"left\" bgcolor=\"#ffffff\" style=\"padding: 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px;\">\n" +
-                "              <p style=\"margin: 0;\">Did you receive this email without signing up? <a href=\"http://127.0.0.1/delete-email/$token\">click here</a>\n" +
+                "              <p style=\"margin: 0;\">Did you receive this email without signing up? <a href=\"http://0.0.0.0:8080/delete-email/$token\">click here</a>\n" +
                 "            </td>\n" +
                 "          </tr>\n" +
                 "          <!-- end copy -->\n" +
